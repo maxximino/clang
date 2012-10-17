@@ -25,6 +25,7 @@
 #include "clang/Sema/DelayedDiagnostic.h"
 #include "clang/Sema/Lookup.h"
 #include "llvm/ADT/StringExtras.h"
+#include "iostream"
 using namespace clang;
 using namespace sema;
 
@@ -4225,6 +4226,21 @@ static void handleForceInlineAttr(Sema &S, Decl *D, const AttributeList &Attr) {
   else
     S.Diag(Attr.getLoc(), diag::warn_attribute_ignored) << Attr.getName();
 }
+static void handleMetaMark(Sema &S, Decl *d, const AttributeList &Attr){
+	if(Attr.getNumArgs() != 1){
+		S.Diag(Attr.getLoc(),diag::err_attribute_wrong_number_arguments) <<1;
+		return;
+	}
+	if(!isa<VarDecl>(d)){
+		S.Diag(Attr.getLoc(),diag::err_attribute_wrong_decl_type) << Attr.getName() << 8;
+		return;
+	}
+	if(!isa<StringLiteral>(Attr.getArg(0))){
+		std::cerr << "Passami 'na stringa!" << std::endl; //lo so che dovrei farlo in modo piu pulito.
+		return;
+	}
+	d->addAttr(::new (S.Context) MetaMarkAttr(Attr.getLoc(),S.Context,(cast<StringLiteral>(Attr.getArg(0)))->getString()));
+}
 
 //===----------------------------------------------------------------------===//
 // Top Level Sema Entry Points
@@ -4244,6 +4260,7 @@ static void ProcessNonInheritableDeclAttr(Sema &S, Scope *scope, Decl *D,
 static void ProcessInheritableDeclAttr(Sema &S, Scope *scope, Decl *D,
                                        const AttributeList &Attr) {
   switch (Attr.getKind()) {
+    case AttributeList::AT_MetaMark:	      handleMetaMark(S, D, Attr); break;
     case AttributeList::AT_IBAction:          handleIBAction(S, D, Attr); break;
     case AttributeList::AT_IBOutlet:          handleIBOutlet(S, D, Attr); break;
     case AttributeList::AT_IBOutletCollection:

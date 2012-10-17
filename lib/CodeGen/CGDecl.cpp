@@ -924,6 +924,13 @@ CodeGenFunction::EmitAutoVarAlloca(const VarDecl &D) {
           DI->EmitDeclareOfAutoVariable(&D, DeclPtr, Builder);
       }
     }
+       if(D.getAttr<MetaMarkAttr>()){
+	    llvm::MDString* sf = llvm::MDString::get(AllocaInsertPt->getContext(), D.getAttr<MetaMarkAttr>()->getMark() );
+	    if(isa<llvm::Instruction>(emission.Address)){ 
+	   	 llvm::Instruction* Alloc = cast<llvm::Instruction>(emission.Address);
+		    Alloc->setMetadata("MetaMark", llvm::MDNode::get(AllocaInsertPt->getContext(), llvm::ArrayRef<llvm::Value*>(sf)));
+    		}
+	}
 
   if (D.hasAttr<AnnotateAttr>())
       EmitVarAnnotations(&D, emission.Address);

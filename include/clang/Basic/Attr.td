@@ -135,6 +135,11 @@ def AddressSpace : Attr {
   let ASTNode = 0;  
 }
 
+def MetaMark : Attr {
+	let Spellings=[GNU<"metamark">,CXX11<"","metamark">];
+	let Args = [StringArgument<"mark">];
+	let Subjects = [Var];
+}
 def Alias : InheritableAttr {
   let Spellings = [GNU<"alias">];
   let Args = [StringArgument<"Aliasee">];
