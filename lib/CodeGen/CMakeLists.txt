@@ -6,6 +6,7 @@ set(LLVM_LINK_COMPONENTS
   ipo
   linker
   vectorize
+  nocryptofa
   )
 
 add_clang_library(clangCodeGen

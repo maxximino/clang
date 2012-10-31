@@ -35,6 +35,7 @@
 #include "llvm/Transforms/IPO.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/Scalar.h"
+#include "llvm/NoCryptoFA/All.h"
 using namespace clang;
 using namespace llvm;
 
@@ -186,7 +187,7 @@ void EmitAssemblyHelper::CreatePasses(TargetMachine *TM) {
   PMBuilder.DisableSimplifyLibCalls = !CodeGenOpts.SimplifyLibCalls;
   PMBuilder.DisableUnitAtATime = !CodeGenOpts.UnitAtATime;
   PMBuilder.DisableUnrollLoops = !CodeGenOpts.UnrollLoops;
-
+  llvm::PropagaMetadati::registerPass(PMBuilder);
   // In ObjC ARC mode, add the main ARC optimization passes.
   if (LangOpts.ObjCAutoRefCount) {
     PMBuilder.addExtension(PassManagerBuilder::EP_EarlyAsPossible,
