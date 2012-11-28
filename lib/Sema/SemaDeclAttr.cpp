@@ -1577,6 +1577,23 @@ static void handleNakedAttr(Sema &S, Decl *D, const AttributeList &Attr) {
 
   D->addAttr(::new (S.Context) NakedAttr(Attr.getRange(), S.Context));
 }
+static void handleMaskedCopyAttr(Sema &S, Decl *D,
+                                   const AttributeList &Attr) {
+  // Check the attribute arguments.
+  if (Attr.hasParameterOrArguments()) {
+    S.Diag(Attr.getLoc(), diag::err_attribute_wrong_number_arguments) << 0;
+    return;
+  }
+
+  if (!isa<FunctionDecl>(D)) {
+    S.Diag(Attr.getLoc(), diag::warn_attribute_wrong_decl_type)
+      << Attr.getName() << ExpectedFunction;
+    return;
+  }
+
+  D->addAttr(::new (S.Context) MaskedCopyAttr(Attr.getRange(), S.Context));
+}
+
 
 static void handleAlwaysInlineAttr(Sema &S, Decl *D,
                                    const AttributeList &Attr) {
@@ -4283,6 +4300,7 @@ static void ProcessInheritableDeclAttr(Sema &S, Scope *scope, Decl *D,
   case AttributeList::AT_Alias:       handleAliasAttr       (S, D, Attr); break;
   case AttributeList::AT_Aligned:     handleAlignedAttr     (S, D, Attr); break;
   case AttributeList::AT_AllocSize:   handleAllocSizeAttr   (S, D, Attr); break;
+  case AttributeList::AT_MaskedCopy:  handleMaskedCopyAttr  (S, D, Attr); break;
   case AttributeList::AT_AlwaysInline:
     handleAlwaysInlineAttr  (S, D, Attr); break;
   case AttributeList::AT_AnalyzerNoReturn:

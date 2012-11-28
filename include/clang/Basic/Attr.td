@@ -140,6 +140,10 @@ def MetaMark : Attr {
 	let Args = [StringArgument<"mark">];
 	let Subjects = [Var];
 }
+def MaskedCopy: Attr {
+	let Spellings=[GNU<"maskedcopy">,CXX11<"","maskedcopy">];
+	let Subjects = [Function];
+}
 def Alias : InheritableAttr {
   let Spellings = [GNU<"alias">];
   let Args = [StringArgument<"Aliasee">];

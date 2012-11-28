@@ -574,6 +574,10 @@ void CodeGenModule::SetLLVMFunctionAttributesForDefinition(const Decl *D,
   if (D->hasAttr<NoInlineAttr>())
     F->addFnAttr(llvm::Attributes::NoInline);
 
+  if (D->hasAttr<MaskedCopyAttr>())
+    F->addFnAttr(llvm::Attributes::MaskedCopy);
+
+
   // (noinline wins over always_inline, and we can't specify both in IR)
   if ((D->hasAttr<AlwaysInlineAttr>() || D->hasAttr<ForceInlineAttr>()) &&
       !F->getFnAttributes().hasAttribute(llvm::Attributes::NoInline))
